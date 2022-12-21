@@ -8,7 +8,7 @@ using Microsoft.OpenApi.Models;
 using RewardPointsAPI_Manual.Filters;
 using RewardPointsAPI_Manual.Middleware;
 
-namespace RewardsApi
+namespace RewardPointsAPI_Manual
 {
     public class Startup
     {

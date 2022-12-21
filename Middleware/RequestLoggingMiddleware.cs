@@ -1,32 +1,25 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace RewardPointsAPI_Manual.Middleware
 {
-    // You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
-    public class RequestLoggingMiddleware
+    public class RequestLoggingMiddleware : IMiddleware
     {
-        private readonly RequestDelegate _next;
+        private readonly ILogger<RequestLoggingMiddleware> _logger;
 
-        public RequestLoggingMiddleware(RequestDelegate next)
+        public RequestLoggingMiddleware(ILogger<RequestLoggingMiddleware> logger)
         {
-            _next = next;
+            _logger = logger;
         }
 
-        public Task Invoke(HttpContext httpContext)
+        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
+            // Log the request
+            _logger.LogDebug($"{context.Request.Method} {context.Request.Path}");
 
-            return _next(httpContext);
-        }
-    }
-
-    // Extension method used to add the middleware to the HTTP request pipeline.
-    public static class RequestLoggingMiddlewareExtensions
-    {
-        public static IApplicationBuilder UseRequestLoggingMiddleware(this IApplicationBuilder builder)
-        {
-            return builder.UseMiddleware<RequestLoggingMiddleware>();
+            // Execute the next middleware in the pipeline
+            await next(context);
         }
     }
 }
